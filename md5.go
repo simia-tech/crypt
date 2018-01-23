@@ -9,8 +9,8 @@ import (
 const MD5Prefix = "$1$"
 
 const (
-	rounds      = 1000
-	maxSaltSize = 8
+	md5Rounds      = 1000
+	md5MaxSaltSize = 8
 )
 
 func init() {
@@ -19,13 +19,13 @@ func init() {
 
 func md5Algorithm(password, settings string) (string, error) {
 	passwordBytes := []byte(password)
-	_, salt, _, err := DecodeSettings(settings)
+	_, _, salt, _, err := DecodeSettings(settings)
 	if err != nil {
 		return "", err
 	}
 	saltBytes := []byte(salt)
-	if len(saltBytes) > maxSaltSize {
-		saltBytes = saltBytes[:maxSaltSize]
+	if len(saltBytes) > md5MaxSaltSize {
+		saltBytes = saltBytes[:md5MaxSaltSize]
 	}
 
 	keyLen := len(passwordBytes)
@@ -61,7 +61,7 @@ func md5Algorithm(password, settings string) (string, error) {
 	// In fear of password crackers here comes a quite long loop which just
 	// processes the output of the previous round again.
 	// We cannot ignore this here.
-	for i := 0; i < rounds; i++ {
+	for i := 0; i < md5Rounds; i++ {
 		h.Reset()
 
 		// Add key or last result.
