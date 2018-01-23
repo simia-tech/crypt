@@ -16,8 +16,6 @@ const (
 	sha256MaxSaltSize   = 16
 )
 
-var sha256RoundsPrefix = []byte("rounds=")
-
 func init() {
 	RegisterAlgorithm(SHA256Prefix, sha256Algorithm)
 }
@@ -103,10 +101,10 @@ func sha256Algorithm(password, settings string) (string, error) {
 
 	// make output
 	buf := bytes.Buffer{}
-	buf.Grow(len([]byte(SHA256Prefix)) + len(sha256RoundsPrefix) + 9 + 1 + len(saltBytes) + 1 + 43)
+	buf.Grow(len([]byte(SHA256Prefix)) + len(roundsPrefix) + 9 + 1 + len(saltBytes) + 1 + 43)
 	buf.Write([]byte(SHA256Prefix))
 	if rounds != sha256DefaultRounds {
-		buf.Write(sha256RoundsPrefix)
+		buf.Write(roundsPrefix)
 		buf.WriteString(strconv.Itoa(rounds))
 		buf.WriteByte('$')
 	}

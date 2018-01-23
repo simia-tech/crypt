@@ -5,6 +5,8 @@ import (
 	"strings"
 )
 
+var roundsPrefix = []byte("rounds=")
+
 // Parameter defines a parameter map.
 type Parameter map[string]string
 
