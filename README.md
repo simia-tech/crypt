@@ -28,7 +28,7 @@ Currently, the following algorithms are supported
 
 | Code    | Name    | Example                                                                                              |
 |---------|---------|------------------------------------------------------------------------------------------------------|
-|       1 | MD5     | $1$$pL/BYSxMXs.jVuSV1lynn1                                                                           |
+|       1 | MD5     | $1$deadbeef$Q7g0UO4hRC0mgQUQ/qkjZ0                                                                   |
 |       5 | SHA256  | $5$saltstring$5B8vYYiY.CVt1RlTTf8KbXBH3hsxY/GNooZaBBGWEc5                                            |
 |       6 | SHA512  | $6$saltstring$svn8UoSVapNtMuq1ukKS4tPQd8iKwSMHWjl/O817G3uBnIFNjnQJuesI68u4OTLiBFdcbYEdFCoEOfaS35inz1 |
 | argon2i | Argon2i | $argon2i$v=19$m=65536,t=2$c29tZXNhbHQ$IMit9qkFULCMA/ViizL57cnTLOa5DiVM9eMwpAvPwr4                    |
