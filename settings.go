@@ -25,28 +25,39 @@ func (p Parameter) GetInt(key string, defaultValue int) int {
 }
 
 // DecodeSettings decodes the provided settings string into it's parts.
-func DecodeSettings(settings string) (string, Parameter, string, string, error) {
-	parts := strings.Split(settings, "$")
-	switch {
-	case len(parts) == 3:
-		return parts[1], nil, parts[2], "", nil
-	case len(parts) >= 4:
-		if strings.Contains(parts[2], "=") {
-			pairs := strings.Split(parts[2], ",")
-			p := Parameter{}
-			for _, pair := range pairs {
-				pairParts := strings.SplitN(pair, "=", 2)
-				if len(pairParts) < 2 {
-					continue
+func DecodeSettings(settings string) (code string, parameter Parameter, salt string, hash string, err error) {
+	step := 0
+	for _, part := range strings.Split(settings, "$") {
+		switch step {
+		case 0, 1:
+			code = part
+			step++
+		case 2:
+			if strings.Contains(part, "=") {
+				if parameter == nil {
+					parameter = Parameter{}
 				}
-				p[pairParts[0]] = pairParts[1]
+				parameter = decodeParameters(parameter, part)
+			} else {
+				salt = part
+				step++
 			}
-			if len(parts) >= 5 {
-				return parts[1], p, parts[3], parts[4], nil
-			}
-			return parts[1], p, parts[3], "", nil
+		case 3:
+			hash = part
+			step++
 		}
-		return parts[1], nil, parts[2], parts[3], nil
 	}
-	return "", nil, "", "", ErrInvalidSettings
+	return
+}
+
+func decodeParameters(p Parameter, text string) Parameter {
+	pairs := strings.Split(text, ",")
+	for _, pair := range pairs {
+		parts := strings.SplitN(pair, "=", 2)
+		if len(parts) < 2 {
+			continue
+		}
+		p[parts[0]] = parts[1]
+	}
+	return p
 }

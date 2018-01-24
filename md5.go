@@ -92,7 +92,7 @@ func md5Algorithm(password, settings string) (string, error) {
 	buf.Write([]byte(MD5Prefix))
 	buf.Write(saltBytes)
 	buf.WriteByte('$')
-	buf.Write(base64_24Bit([]byte{
+	buf.Write(Encode24BitBase64([]byte{
 		sumA[12], sumA[6], sumA[0],
 		sumA[13], sumA[7], sumA[1],
 		sumA[14], sumA[8], sumA[2],

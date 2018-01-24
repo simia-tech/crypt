@@ -114,7 +114,7 @@ func sha512Algorithm(password, settings string) (string, error) {
 	}
 	buf.Write(saltBytes)
 	buf.WriteByte('$')
-	buf.Write(base64_24Bit([]byte{
+	buf.Write(Encode24BitBase64([]byte{
 		sumA[42], sumA[21], sumA[0],
 		sumA[1], sumA[43], sumA[22],
 		sumA[23], sumA[2], sumA[44],

@@ -23,6 +23,8 @@ func TestDecodeSettings(t *testing.T) {
 		{"$1$rounds=100$salt", "1", crypt.Parameter{"rounds": "100"}, "salt", "", nil},
 		{"$1$rounds=200$salt$hash", "1", crypt.Parameter{"rounds": "200"}, "salt", "hash", nil},
 		{"$1$rounds=300$salt$hash$", "1", crypt.Parameter{"rounds": "300"}, "salt", "hash", nil},
+		{"$argon2i$v=19$m=65536,t=2,p=4$c29tZXNhbHQ$IMit9qkFULCMA/ViizL57cnTLOa5DiVM9eMwpAvPwr4",
+			"argon2i", crypt.Parameter{"v": "19", "m": "65536", "t": "2", "p": "4"}, "c29tZXNhbHQ", "IMit9qkFULCMA/ViizL57cnTLOa5DiVM9eMwpAvPwr4", nil},
 	}
 
 	for _, tc := range tcs {

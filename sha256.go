@@ -110,7 +110,7 @@ func sha256Algorithm(password, settings string) (string, error) {
 	}
 	buf.Write(saltBytes)
 	buf.WriteByte('$')
-	buf.Write(base64_24Bit([]byte{
+	buf.Write(Encode24BitBase64([]byte{
 		sumA[20], sumA[10], sumA[0],
 		sumA[11], sumA[1], sumA[21],
 		sumA[2], sumA[22], sumA[12],
