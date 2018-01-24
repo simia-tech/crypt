@@ -12,19 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package crypt
+package main
 
 import (
 	"fmt"
-	"strings"
+	"log"
+
+	"github.com/simia-tech/crypt"
 )
 
-// Crypt hashes the provided password using the provided salt.
-func Crypt(password, settings string) (string, error) {
-	for prefix, algorithm := range algorithms {
-		if strings.HasPrefix(settings, prefix) {
-			return algorithm(password, settings)
-		}
+func main() {
+	password := "password"
+	settings := "$argon2i$v=19$m=65536,t=2,p=4$c2FsdHNhbHQ" // salt = "saltsalt"
+
+	encoded, err := crypt.Crypt(password, settings)
+	if err != nil {
+		log.Fatal(err)
 	}
-	return "", fmt.Errorf("no registered algorithm for settings [%s]", settings)
+
+	fmt.Println(encoded)
+	// Output: $argon2i$v=19$m=65536,t=2$c2FsdHNhbHQ$YPZdL78ZgqtxD1bLxAjRySEFfYb3Y1BOQQWFW6sT0Vo
 }
