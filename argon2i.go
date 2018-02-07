@@ -16,6 +16,7 @@ package crypt
 
 import (
 	"bytes"
+	"crypto/rand"
 	"fmt"
 	"strconv"
 	"strings"
@@ -31,12 +32,25 @@ func init() {
 }
 
 const (
-	argon2iDefaultMemory  = 32 * 1024
-	argon2iDefaultTime    = 4
-	argon2iDefaultThreads = 4
-	argon2iKeySize        = 32
-	argon2iMaxSaltSize    = 0xFFFFFFFF
+	argon2iDefaultMemory   = 32 * 1024
+	argon2iDefaultTime     = 4
+	argon2iDefaultThreads  = 4
+	argon2iKeySize         = 32
+	argon2iDefaultSaltSize = 20
+	argon2iMaxSaltSize     = 0xFFFFFFFF
 )
+
+// Argon2iSettings returns argon2i settings with the provided parameter.
+func Argon2iSettings(m, t, p int, salts ...string) (string, error) {
+	settings := fmt.Sprintf("%sv=19$m=%d,t=%d,p=%d", Argon2iPrefix, m, t, p)
+	salt := strings.Join(salts, "")
+	if salt == "" {
+		b := make([]byte, argon2iDefaultSaltSize)
+		rand.Read(b)
+		salt = Base64Encoding.EncodeToString(b)
+	}
+	return settings + "$" + salt, nil
+}
 
 func argon2iAlgorithm(password, settings string) (string, error) {
 	passwordBytes := []byte(password)
