@@ -58,9 +58,15 @@ func argon2iAlgorithm(password, settings string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	saltBytes, err := Base64Encoding.DecodeString(salt)
-	if err != nil {
-		return "", fmt.Errorf("base64 decode [%s]: %v", salt, err)
+	saltBytes := []byte{}
+	if salt == "" {
+		saltBytes = make([]byte, argon2iDefaultSaltSize)
+		rand.Read(saltBytes)
+	} else {
+		saltBytes, err = Base64Encoding.DecodeString(salt)
+		if err != nil {
+			return "", fmt.Errorf("base64 decode [%s]: %v", salt, err)
+		}
 	}
 	if len(saltBytes) > argon2iMaxSaltSize {
 		saltBytes = saltBytes[:argon2iMaxSaltSize]
