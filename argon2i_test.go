@@ -31,7 +31,7 @@ func TestArgon2i(t *testing.T) {
 		expectedResult string
 		expectedErr    error
 	}{
-		{"generate salt", "$argon2i$v=19$m=65536,t=2,p=4", "$argon2i$v=19$m=65536,t=2", nil},
+		{"generate salt", "$argon2i$v=19$m=65536,t=2,p=4$", "$argon2i$v=19$m=65536,t=2$", nil},
 		{"password", "$argon2i$v=19$m=65536,t=2,p=4$c29tZXNhbHQ", "$argon2i$v=19$m=65536,t=2$c29tZXNhbHQ$IMit9qkFULCMA/ViizL57cnTLOa5DiVM9eMwpAvPwr4", nil},
 		{"another password", "$argon2i$v=19$m=65536,t=2,p=4$YW5vdGhlcnNhbHQ", "$argon2i$v=19$m=65536,t=2$YW5vdGhlcnNhbHQ$BCRltpeTFX0QYrELiOXWGZniID9nOUsBPy8Bu0SE7bM", nil},
 		{"password", "$argon2i$v=19$m=65536,t=2,p=4$bG9uZ3NhbHRsb25nc2FsdGxvbmc", "$argon2i$v=19$m=65536,t=2$bG9uZ3NhbHRsb25nc2FsdGxvbmc$rDmQABiNkSO3bGHbBUkShgb7wIlBP8HHfq6nDH+Sqss", nil},
