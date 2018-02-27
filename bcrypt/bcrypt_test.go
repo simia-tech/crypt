@@ -125,8 +125,8 @@ func TestUnpaddedBase64Encoding(t *testing.T) {
 }
 
 func TestGenerateFromPasswordAndSalt(t *testing.T) {
-	expected := []byte{36, 50, 97, 36, 48, 53, 36, 98, 69, 84, 120, 98, 70, 80, 106, 97, 49, 79, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 117, 102, 99, 81, 88, 85, 46, 105, 118, 69, 73, 90, 68, 56, 73, 52, 57, 80, 54, 53, 104, 106, 88, 106, 107, 65, 109, 78, 107, 86, 87}
-	actual, err := GenerateFromPasswordAndSalt([]byte("test"), 5, []byte("testtest"))
+	expected := []byte{36, 50, 97, 36, 48, 53, 36, 88, 97, 106, 106, 81, 118, 78, 104, 118, 118, 82, 116, 53, 71, 83, 101, 70, 107, 49, 120, 70, 101, 81, 65, 81, 115, 84, 102, 85, 110, 57, 72, 120, 107, 68, 103, 69, 106, 82, 98, 107, 108, 75, 101, 47, 73, 101, 116, 56, 66, 66, 98, 87}
+	actual, err := GenerateFromPasswordAndSalt([]byte("test"), 5, []byte("XajjQvNhvvRt5GSeFk1xFe"))
 	if err != nil {
 		t.Fatalf("GenerateFromPasswordAndSalt: %v", err)
 	}
