@@ -34,15 +34,16 @@ func TestArgon2i(t *testing.T) {
 		{"generate salt", "$argon2i$v=19$m=65536,t=2,p=4$", "$argon2i$v=19$m=65536,t=2$", nil},
 		{"password", "$argon2i$v=19$m=65536,t=2,p=4$c29tZXNhbHQ", "$argon2i$v=19$m=65536,t=2$c29tZXNhbHQ$IMit9qkFULCMA/ViizL57cnTLOa5DiVM9eMwpAvPwr4", nil},
 		{"another password", "$argon2i$v=19$m=65536,t=2,p=4$YW5vdGhlcnNhbHQ", "$argon2i$v=19$m=65536,t=2$YW5vdGhlcnNhbHQ$BCRltpeTFX0QYrELiOXWGZniID9nOUsBPy8Bu0SE7bM", nil},
-		{"password", "$argon2i$v=19$m=65536,t=2,p=4$bG9uZ3NhbHRsb25nc2FsdGxvbmc", "$argon2i$v=19$m=65536,t=2$bG9uZ3NhbHRsb25nc2FsdGxvbmc$rDmQABiNkSO3bGHbBUkShgb7wIlBP8HHfq6nDH+Sqss", nil},
-		{"ignore-hash-in-settings", "$argon2i$v=19$m=65536,t=2$bG9uZ3NhbHRsb25nc2FsdGxvbmc$rDmQABiNkSO3bGHbBUkShgb7wIlBP8HHfq6nDH+Sqss", "$argon2i$v=19$m=65536,t=2$bG9uZ3NhbHRsb25nc2FsdGxvbmc$xY9IRFH+zQduVUYoZfSoT6tylET3/AUIOMS3rFF0x0o", nil},
+		{"password", "$argon2i$v=19$m=65536,t=2,p=1$bG9uZ3NhbHRsb25nc2FsdGxvbmc", "$argon2i$v=19$m=65536,t=2,p=1$bG9uZ3NhbHRsb25nc2FsdA$8BZnxCqANQ3mGYITjgezarZ/b5vivfVRVy3cWwwXGHI", nil},
+		{"ignore-hash-in-settings", "$argon2i$v=19$m=65536,t=2$bG9uZ3NhbHRsb25nc2FsdGxvbmc$rDmQABiNkSO3bGHbBUkShgb7wIlBP8HHfq6nDH+Sqss", "$argon2i$v=19$m=65536,t=2$bG9uZ3NhbHRsb25nc2FsdA$Cfa1JVLA/wGtR7UeWI+Q+ZOfMmyPchePKy2h+kjryG8", nil},
+		{"password", "$argon2i$v=19$m=65536,t=3,p=1$bG9uZ3NhbHRsb25nc2FsdA", "$argon2i$v=19$m=65536,t=3,p=1$bG9uZ3NhbHRsb25nc2FsdA$K2rLfVoQG17LuUn26otasTX1WBXjr6hi5NZXKKxmYrs", nil},
 	}
 
 	for _, tc := range tcs {
 		t.Run(tc.settings, func(t *testing.T) {
 			result, err := crypt.Crypt(tc.password, tc.settings)
 			require.Equal(t, tc.expectedErr, err)
-			assert.True(t, strings.HasPrefix(result, tc.expectedResult))
+			assert.True(t, strings.HasPrefix(result, tc.expectedResult), "expected prefix %q, got %q", tc.expectedResult, result)
 		})
 	}
 }

@@ -36,8 +36,8 @@ const (
 	argon2iDefaultTime     = 4
 	argon2iDefaultThreads  = 4
 	argon2iKeySize         = 32
-	argon2iDefaultSaltSize = 20
-	argon2iMaxSaltSize     = 0xFFFFFFFF
+	argon2iDefaultSaltSize = 16
+	argon2iMaxSaltSize     = 16 // 0xFFFFFFFF
 )
 
 // Argon2iSettings returns argon2i settings with the provided parameter.
