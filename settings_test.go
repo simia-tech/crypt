@@ -23,32 +23,23 @@ import (
 )
 
 func TestDecodeSettings(t *testing.T) {
-	tcs := []struct {
-		settings        string
-		expectCode      string
-		expectParameter crypt.Parameter
-		expectSalt      string
-		expectHash      string
-		expectErr       error
-	}{
-		{"$1$$", "1", nil, "", "", nil},
-		{"$1$salt$", "1", nil, "salt", "", nil},
-		{"$1$salt$hash", "1", nil, "salt", "hash", nil},
-		{"$1$rounds=100$salt", "1", crypt.Parameter{"rounds": "100"}, "salt", "", nil},
-		{"$1$rounds=200$salt$hash", "1", crypt.Parameter{"rounds": "200"}, "salt", "hash", nil},
-		{"$1$rounds=300$salt$hash$", "1", crypt.Parameter{"rounds": "300"}, "salt", "hash", nil},
-		{"$argon2i$v=19$m=65536,t=2,p=4$c29tZXNhbHQ$IMit9qkFULCMA/ViizL57cnTLOa5DiVM9eMwpAvPwr4",
-			"argon2i", crypt.Parameter{"v": "19", "m": "65536", "t": "2", "p": "4"}, "c29tZXNhbHQ", "IMit9qkFULCMA/ViizL57cnTLOa5DiVM9eMwpAvPwr4", nil},
+	testFn := func(settings, expectCode string, expectParameter crypt.Parameter, expectSalt, expectHash string, expectErr error) (string, func(*testing.T)) {
+		return settings, func(t *testing.T) {
+			code, parameter, salt, hash, err := crypt.DecodeSettings(settings)
+			require.Equal(t, expectErr, err)
+			assert.Equal(t, expectCode, code)
+			assert.Equal(t, expectParameter, parameter)
+			assert.Equal(t, expectSalt, salt)
+			assert.Equal(t, expectHash, hash)
+		}
 	}
 
-	for _, tc := range tcs {
-		t.Run(tc.settings, func(t *testing.T) {
-			code, parameter, salt, hash, err := crypt.DecodeSettings(tc.settings)
-			require.Equal(t, tc.expectErr, err)
-			assert.Equal(t, tc.expectCode, code)
-			assert.Equal(t, tc.expectParameter, parameter)
-			assert.Equal(t, tc.expectSalt, salt)
-			assert.Equal(t, tc.expectHash, hash)
-		})
-	}
+	t.Run(testFn("$1$$", "1", nil, "", "", nil))
+	t.Run(testFn("$1$salt$", "1", nil, "salt", "", nil))
+	t.Run(testFn("$1$salt$hash", "1", nil, "salt", "hash", nil))
+	t.Run(testFn("$1$rounds=100$salt", "1", crypt.Parameter{"rounds": "100"}, "salt", "", nil))
+	t.Run(testFn("$1$rounds=200$salt$hash", "1", crypt.Parameter{"rounds": "200"}, "salt", "hash", nil))
+	t.Run(testFn("$1$rounds=300$salt$hash$", "1", crypt.Parameter{"rounds": "300"}, "salt", "hash", nil))
+	t.Run(testFn("$2a$08$ybX1Hjkb5N.8WEcYtBuB7u", "2a", crypt.Parameter{"cost": "8"}, "ybX1Hjkb5N.8WEcYtBuB7u", "", nil))
+	t.Run(testFn("$argon2i$v=19$m=65536,t=2,p=4$c29tZXNhbHQ$IMit9qkFULCMA/ViizL57cnTLOa5DiVM9eMwpAvPwr4", "argon2i", crypt.Parameter{"v": "19", "m": "65536", "t": "2", "p": "4"}, "c29tZXNhbHQ", "IMit9qkFULCMA/ViizL57cnTLOa5DiVM9eMwpAvPwr4", nil))
 }

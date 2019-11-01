@@ -23,41 +23,31 @@ import (
 )
 
 func TestBase64(t *testing.T) {
-	tcs := []struct {
-		decoded string
-		encoded string
-	}{
-		{"somesalt", "c29tZXNhbHQ"},
-		{"test", "dGVzdA"},
-		{"test123test123", "dGVzdDEyM3Rlc3QxMjM"},
-	}
-
-	for _, tc := range tcs {
-		t.Run(tc.decoded, func(t *testing.T) {
-			encodeResult := crypt.Base64Encoding.EncodeToString([]byte(tc.decoded))
-			assert.Equal(t, tc.encoded, encodeResult)
+	testFn := func(decoded, encoded string) (string, func(*testing.T)) {
+		return decoded, func(t *testing.T) {
+			encodeResult := crypt.Base64Encoding.EncodeToString([]byte(decoded))
+			assert.Equal(t, encoded, encodeResult)
 
 			decodeResult, err := crypt.Base64Encoding.DecodeString(string(encodeResult))
 			require.NoError(t, err)
-			assert.Equal(t, tc.decoded, string(decodeResult))
-		})
+			assert.Equal(t, decoded, string(decodeResult))
+		}
 	}
+
+	t.Run(testFn("somesalt", "c29tZXNhbHQ"))
+	t.Run(testFn("test", "dGVzdA"))
+	t.Run(testFn("test123test123", "dGVzdDEyM3Rlc3QxMjM"))
 }
 
 func TestEncode24BitBase64(t *testing.T) {
-	tcs := []struct {
-		decoded       string
-		expectEncoded string
-	}{
-		{"somesalt", "nxKPZBLMgF5"},
-		{"test", "oJqQo/"},
-		{"test123test123", "oJqQo3XAnELNnFLAmA1"},
+	testFn := func(decoded, expectEncoded string) (string, func(*testing.T)) {
+		return decoded, func(t *testing.T) {
+			encodeResult := crypt.Encode24BitBase64([]byte(decoded))
+			assert.Equal(t, expectEncoded, string(encodeResult))
+		}
 	}
 
-	for _, tc := range tcs {
-		t.Run(tc.decoded, func(t *testing.T) {
-			encodeResult := crypt.Encode24BitBase64([]byte(tc.decoded))
-			assert.Equal(t, tc.expectEncoded, string(encodeResult))
-		})
-	}
+	t.Run(testFn("somesalt", "nxKPZBLMgF5"))
+	t.Run(testFn("test", "oJqQo/"))
+	t.Run(testFn("test123test123", "oJqQo3XAnELNnFLAmA1"))
 }

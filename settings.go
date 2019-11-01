@@ -15,11 +15,15 @@
 package crypt
 
 import (
+	"regexp"
 	"strconv"
 	"strings"
 )
 
-var roundsPrefix = []byte("rounds=")
+var (
+	roundsPrefix = []byte("rounds=")
+	costRegexp   = regexp.MustCompile(`^[0-9]{2}$`)
+)
 
 // Parameter defines a parameter map.
 type Parameter map[string]string
@@ -52,6 +56,11 @@ func DecodeSettings(settings string) (code string, parameter Parameter, salt str
 					parameter = Parameter{}
 				}
 				parameter = decodeParameters(parameter, part)
+			} else if costRegexp.MatchString(part) {
+				if parameter == nil {
+					parameter = Parameter{}
+				}
+				parameter["cost"] = strings.Trim(part, "0")
 			} else {
 				salt = part
 				step++

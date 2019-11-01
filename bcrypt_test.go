@@ -25,44 +25,32 @@ import (
 )
 
 func TestBCrypt(t *testing.T) {
-	tcs := []struct {
-		password       string
-		settings       string
-		expectedResult string
-		expectedErr    error
-	}{
-		{"U*U", "$2a$05$CCCCCCCCCCCCCCCCCCCCC.", "$2a$05$CCCCCCCCCCCCCCCCCCCCC.E5YPO9kmyuRGyh0XouQYb4YMJKvyOeW", nil},
-		{"U*U*", "$2a$05$CCCCCCCCCCCCCCCCCCCCC.", "$2a$05$CCCCCCCCCCCCCCCCCCCCC.VGOzA784oUp/Z0DY336zx7pLYAy0lwK", nil},
-		{"U*U*U", "$2a$05$XXXXXXXXXXXXXXXXXXXXXO", "$2a$05$XXXXXXXXXXXXXXXXXXXXXOAcXxm9kjPGEMsLznoKqmqw7tc8WCx4a", nil},
-		{"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789chars after 72 are ignored", "$2a$05$abcdefghijklmnopqrstuu", "$2a$05$abcdefghijklmnopqrstuu5s2v8.iXieOjg/.AySBTTZIIVFJeBui", nil},
-		{"\xa3", "$2a$05$/OK.fbVrR/bpIqNJ5ianF.", "$2a$05$/OK.fbVrR/bpIqNJ5ianF.Sa7shbm4.OzKpvFnX1pQLmQW96oUlCq", nil},
-		{"", "$2a$05$CCCCCCCCCCCCCCCCCCCCC.", "$2a$05$CCCCCCCCCCCCCCCCCCCCC.7uG0VCzI2bS7j6ymqJi9CdcdxiRTWNy", nil},
+	testFn := func(password, settings, expectResult string, expectErr error) (string, func(*testing.T)) {
+		return settings, func(t *testing.T) {
+			result, err := crypt.Crypt(password, settings)
+			require.Equal(t, expectErr, err)
+			assert.Equal(t, expectResult, result)
+		}
 	}
 
-	for _, tc := range tcs {
-		t.Run(tc.settings, func(t *testing.T) {
-			result, err := crypt.Crypt(tc.password, tc.settings)
-			require.Equal(t, tc.expectedErr, err)
-			assert.Equal(t, tc.expectedResult, result)
-		})
-	}
+	t.Run(testFn("U*U", "$2a$05$CCCCCCCCCCCCCCCCCCCCC.", "$2a$05$CCCCCCCCCCCCCCCCCCCCC.E5YPO9kmyuRGyh0XouQYb4YMJKvyOeW", nil))
+	t.Run(testFn("U*U*", "$2a$05$CCCCCCCCCCCCCCCCCCCCC.", "$2a$05$CCCCCCCCCCCCCCCCCCCCC.VGOzA784oUp/Z0DY336zx7pLYAy0lwK", nil))
+	t.Run(testFn("U*U*U", "$2a$05$XXXXXXXXXXXXXXXXXXXXXO", "$2a$05$XXXXXXXXXXXXXXXXXXXXXOAcXxm9kjPGEMsLznoKqmqw7tc8WCx4a", nil))
+	t.Run(testFn("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789chars after 72 are ignored", "$2a$05$abcdefghijklmnopqrstuu", "$2a$05$abcdefghijklmnopqrstuu5s2v8.iXieOjg/.AySBTTZIIVFJeBui", nil))
+	t.Run(testFn("\xa3", "$2a$05$/OK.fbVrR/bpIqNJ5ianF.", "$2a$05$/OK.fbVrR/bpIqNJ5ianF.Sa7shbm4.OzKpvFnX1pQLmQW96oUlCq", nil))
+	t.Run(testFn("", "$2a$05$CCCCCCCCCCCCCCCCCCCCC.", "$2a$05$CCCCCCCCCCCCCCCCCCCCC.7uG0VCzI2bS7j6ymqJi9CdcdxiRTWNy", nil))
 }
 
 func TestBCryptSettings(t *testing.T) {
-	tcs := []struct {
-		cost                   int
-		expectedSettingsPrefix string
-	}{
-		{5, "$2a$05"},
-		{10, "$2a$10"},
-		{15, "$2a$15"},
+	testFn := func(cost int, expectSettingsPrefix string) (string, func(*testing.T)) {
+		return fmt.Sprintf("cost=%d", cost), func(t *testing.T) {
+			settings, err := crypt.BCryptSettings(cost)
+			require.NoError(t, err)
+			assert.True(t, strings.HasPrefix(settings, expectSettingsPrefix))
+		}
 	}
 
-	for _, tc := range tcs {
-		t.Run(fmt.Sprintf("cost=%d", tc.cost), func(t *testing.T) {
-			settings, err := crypt.BCryptSettings(tc.cost)
-			require.NoError(t, err)
-			assert.True(t, strings.HasPrefix(settings, tc.expectedSettingsPrefix))
-		})
-	}
+	t.Run(testFn(5, "$2a$05"))
+	t.Run(testFn(10, "$2a$10"))
+	t.Run(testFn(15, "$2a$15"))
 }
