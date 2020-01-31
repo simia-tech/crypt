@@ -17,10 +17,31 @@ package crypt_test
 import (
 	"testing"
 
-	"github.com/simia-tech/crypt"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/simia-tech/crypt"
 )
+
+func TestSettings(t *testing.T) {
+	testFn := func(hash, expectSettings string) (string, func(*testing.T)) {
+		return hash, func(t *testing.T) {
+			settings, err := crypt.Settings(hash)
+			require.NoError(t, err)
+			assert.Equal(t, expectSettings, settings)
+		}
+	}
+
+	t.Run(testFn("$1$$", "$1$"))
+	t.Run(testFn("$1$salt$", "$1$salt"))
+	t.Run(testFn("$1$salt$hash", "$1$salt"))
+	t.Run(testFn("$1$rounds=100$salt", "$1$rounds=100$salt"))
+	t.Run(testFn("$1$rounds=200$salt$hash", "$1$rounds=200$salt"))
+	t.Run(testFn("$1$rounds=300$salt$hash$", "$1$rounds=300$salt"))
+	t.Run(testFn("$2a$08$ybX1Hjkb5N.8WEcYtBuB7u", "$2a$08$ybX1Hjkb5N.8WEcYtBuB7u"))
+	t.Run(testFn("$2a$08$ybX1Hjkb5N.8WEcYtBuB7u$CMA/ViizL57cnTLOa5DiVM9e", "$2a$08$ybX1Hjkb5N.8WEcYtBuB7u"))
+	t.Run(testFn("$argon2i$v=19$m=65536,t=2,p=4$c29tZXNhbHQ$IMit9qkFULCMA/ViizL57cnTLOa5DiVM9eMwpAvPwr4", "$argon2i$v=19$m=65536,t=2,p=4$c29tZXNhbHQ"))
+}
 
 func TestDecodeSettings(t *testing.T) {
 	testFn := func(settings, expectCode string, expectParameter crypt.Parameter, expectSalt, expectHash string, expectErr error) (string, func(*testing.T)) {
