@@ -43,7 +43,7 @@ func (p Parameter) GetInt(key string, defaultValue int) int {
 }
 
 // Settings removes the hash from the provided settings and returns the result.
-func Settings(settings string) (string, error) {
+func Settings(settings string) string {
 	parts := strings.Split(settings, "$")
 	keep := 3
 	if len(parts) > 3 {
@@ -56,7 +56,7 @@ func Settings(settings string) (string, error) {
 			keep++
 		}
 	}
-	return strings.Join(parts[:keep], "$"), nil
+	return strings.Join(parts[:keep], "$")
 }
 
 // DecodeSettings decodes the provided settings string into it's parts.

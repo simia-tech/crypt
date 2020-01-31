@@ -26,8 +26,7 @@ import (
 func TestSettings(t *testing.T) {
 	testFn := func(hash, expectSettings string) (string, func(*testing.T)) {
 		return hash, func(t *testing.T) {
-			settings, err := crypt.Settings(hash)
-			require.NoError(t, err)
+			settings := crypt.Settings(hash)
 			assert.Equal(t, expectSettings, settings)
 		}
 	}
