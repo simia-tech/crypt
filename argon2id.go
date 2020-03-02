@@ -39,13 +39,13 @@ const (
 	argon2idDefaultMemory   = 32 * 1024
 	argon2idDefaultTime     = 1
 	argon2idDefaultThreads  = 4
-	argon2idKeySize         = 32
+	argon2idDefaultKeySize  = 32
 	argon2idDefaultSaltSize = 16
 )
 
 // Argon2idSettings returns argon2id settings with the provided parameter.
-func Argon2idSettings(m, t, p int, salts ...string) (string, error) {
-	settings := fmt.Sprintf("%sv=19$m=%d,t=%d,p=%d", Argon2idPrefix, m, t, p)
+func Argon2idSettings(m, t, p, k int, salts ...string) (string, error) {
+	settings := fmt.Sprintf("%sv=19$m=%d,t=%d,p=%d,k=%d", Argon2idPrefix, m, t, p, k)
 	salt := strings.Join(salts, "")
 	if salt == "" {
 		b := make([]byte, argon2idDefaultSaltSize)
@@ -74,16 +74,31 @@ func argon2idAlgorithm(password, settings string) (string, error) {
 	memory := parameter.GetInt("m", argon2idDefaultMemory)
 	time := parameter.GetInt("t", argon2idDefaultTime)
 	threads := parameter.GetInt("p", argon2idDefaultThreads)
+	keySize := parameter.GetInt("k", argon2idDefaultKeySize)
 
-	hash := argon2.IDKey(passwordBytes, saltBytes, uint32(time), uint32(memory), uint8(threads), argon2idKeySize)
+	hash := argon2.IDKey(passwordBytes, saltBytes, uint32(time), uint32(memory), uint8(threads), uint32(keySize))
+
+	p := []string{}
+	if memory != argon2iDefaultMemory {
+		p = append(p, "m="+strconv.Itoa(memory))
+	}
+	if time != argon2iDefaultTime {
+		p = append(p, "t="+strconv.Itoa(time))
+	}
+	if threads != argon2iDefaultThreads {
+		p = append(p, "p="+strconv.Itoa(threads))
+	}
+	if keySize != argon2iDefaultKeySize {
+		p = append(p, "k="+strconv.Itoa(keySize))
+	}
 
 	buf := bytes.Buffer{}
-	buf.Write([]byte(Argon2idPrefix))
+	buf.Write([]byte(Argon2iPrefix))
 	buf.WriteString("v=19$")
-	buf.WriteString("m="+strconv.Itoa(memory)+",")
-	buf.WriteString("t="+strconv.Itoa(time)+",")
-	buf.WriteString("p="+strconv.Itoa(threads))
-	buf.WriteString("$")
+	if len(p) > 0 {
+		buf.WriteString(strings.Join(p, ","))
+		buf.WriteString("$")
+	}
 	buf.WriteString(Base64Encoding.EncodeToString(saltBytes))
 	buf.WriteString("$")
 	buf.WriteString(Base64Encoding.EncodeToString(hash))

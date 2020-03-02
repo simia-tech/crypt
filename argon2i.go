@@ -35,14 +35,13 @@ const (
 	argon2iDefaultMemory   = 32 * 1024
 	argon2iDefaultTime     = 4
 	argon2iDefaultThreads  = 4
-	argon2iKeySize         = 32
+	argon2iDefaultKeySize  = 32
 	argon2iDefaultSaltSize = 16
-	argon2iMaxSaltSize     = 16 // 0xFFFFFFFF
 )
 
 // Argon2iSettings returns argon2i settings with the provided parameter.
-func Argon2iSettings(m, t, p int, salts ...string) (string, error) {
-	settings := fmt.Sprintf("%sv=19$m=%d,t=%d,p=%d", Argon2iPrefix, m, t, p)
+func Argon2iSettings(m, t, p, k int, salts ...string) (string, error) {
+	settings := fmt.Sprintf("%sv=19$m=%d,t=%d,p=%d,k=%d", Argon2iPrefix, m, t, p, k)
 	salt := strings.Join(salts, "")
 	if salt == "" {
 		b := make([]byte, argon2iDefaultSaltSize)
@@ -68,14 +67,12 @@ func argon2iAlgorithm(password, settings string) (string, error) {
 			return "", fmt.Errorf("base64 decode [%s]: %v", salt, err)
 		}
 	}
-	if len(saltBytes) > argon2iMaxSaltSize {
-		saltBytes = saltBytes[:argon2iMaxSaltSize]
-	}
 	memory := parameter.GetInt("m", argon2iDefaultMemory)
 	time := parameter.GetInt("t", argon2iDefaultTime)
 	threads := parameter.GetInt("p", argon2iDefaultThreads)
+	keySize := parameter.GetInt("k", argon2iDefaultKeySize)
 
-	hash := argon2.Key(passwordBytes, saltBytes, uint32(time), uint32(memory), uint8(threads), argon2iKeySize)
+	hash := argon2.Key(passwordBytes, saltBytes, uint32(time), uint32(memory), uint8(threads), uint32(keySize))
 
 	p := []string{}
 	if memory != argon2iDefaultMemory {
@@ -86,6 +83,9 @@ func argon2iAlgorithm(password, settings string) (string, error) {
 	}
 	if threads != argon2iDefaultThreads {
 		p = append(p, "p="+strconv.Itoa(threads))
+	}
+	if keySize != argon2iDefaultKeySize {
+		p = append(p, "k="+strconv.Itoa(keySize))
 	}
 
 	buf := bytes.Buffer{}

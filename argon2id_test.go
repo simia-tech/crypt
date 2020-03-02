@@ -25,74 +25,38 @@ import (
 )
 
 func TestArgon2id(t *testing.T) {
-	tcs := []struct {
-		password       string
-		settings       string
-		expectedResult string
-		expectedErr    error
-	}{
-		{
-			"generate salt",
-			"$argon2id$v=19$m=65536,t=2,p=4$",
-			"$argon2id$v=19$m=65536,t=2,p=4$",
-			nil,
-		},
-		{
-			"password", // salt = somesalt
-			"$argon2id$v=19$m=65536,t=2,p=4$c29tZXNhbHQ",
-			"$argon2id$v=19$m=65536,t=2,p=4$c29tZXNhbHQ$GpZ3sK/oH9p7VIiV56G/64Zo/8GaUw434IimaPqxwCo",
-			nil,
-		},
-		{
-			"another password", // salt = anothersalt
-			"$argon2id$v=19$m=65536,t=2,p=4$YW5vdGhlcnNhbHQ",
-			"$argon2id$v=19$m=65536,t=2,p=4$YW5vdGhlcnNhbHQ$ZU9gSnQfqeEZG2Wu6Wq9pek2UAttI/N8NLCEecVBRZc",
-			nil,
-		},
-		{
-			"password", // salt = longsaltlongsaltlong
-			"$argon2id$v=19$m=65536,t=2,p=1$bG9uZ3NhbHRsb25nc2FsdGxvbmc",
-			"$argon2id$v=19$m=65536,t=2,p=1$bG9uZ3NhbHRsb25nc2FsdGxvbmc$y3Tz6SCUIw7occvkgsUYx0hwaePXLus7rxUzsOghhnE",
-			nil,
-		},
-		{
-			"ignore-hash-in-settings", // salt = longsaltlongsaltlong
-			"$argon2id$v=19$m=65536,t=2,p=1$bG9uZ3NhbHRsb25nc2FsdGxvbmc$y3Tz6SCUIw7occvkgsUYx0hwaePXLus7rxUzsOghhnE",
-			"$argon2id$v=19$m=65536,t=2,p=1$bG9uZ3NhbHRsb25nc2FsdGxvbmc$sToxuMqIBNNRYEPy2Gh690R7qa7mkhJ627ciTZdyQSA",
-			nil,
-		},
-		{
-			"password", // salt = longsaltlongsalt
-			"$argon2id$v=19$m=65536,t=3,p=1$bG9uZ3NhbHRsb25nc2FsdA",
-			"$argon2id$v=19$m=65536,t=3,p=1$bG9uZ3NhbHRsb25nc2FsdA$SHogC8dbNGlyrOIJTrZ4f0/r/ZmTglvCx4u5GUzw6EM",
-			nil,
-		},
+	testFn := func(password, settings, expectResult string, expectErr error) (string, func(*testing.T)) {
+		return settings, func(t *testing.T) {
+			result, err := crypt.Crypt(password, settings)
+			require.Equal(t, expectErr, err)
+			assert.True(t, strings.HasPrefix(result, expectResult), "expected prefix %q, got %q", expectResult, result)
+		}
 	}
 
-	for _, tc := range tcs {
-		t.Run(tc.settings, func(t *testing.T) {
-			result, err := crypt.Crypt(tc.password, tc.settings)
-			require.Equal(t, tc.expectedErr, err)
-			assert.True(t, strings.HasPrefix(result, tc.expectedResult), "expected prefix %q, got %q", tc.expectedResult, result)
-		})
-	}
+	t.Run(testFn("generate salt", "$argon2id$v=19$m=65536,t=2,p=4$",
+		"$argon2i$v=19$m=65536,t=2$", nil))
+	t.Run(testFn("password", "$argon2id$v=19$m=65536,t=2,p=4$c29tZXNhbHQ",
+		"$argon2i$v=19$m=65536,t=2$c29tZXNhbHQ$GpZ3sK/oH9p7VIiV56G/64Zo/8GaUw434IimaPqxwCo", nil))
+	t.Run(testFn("another password", "$argon2id$v=19$m=65536,t=2,p=4$YW5vdGhlcnNhbHQ",
+		"$argon2i$v=19$m=65536,t=2$YW5vdGhlcnNhbHQ$ZU9gSnQfqeEZG2Wu6Wq9pek2UAttI/N8NLCEecVBRZc", nil))
+	t.Run(testFn("password", "$argon2id$v=19$m=65536,t=2,p=1$bG9uZ3NhbHRsb25nc2FsdGxvbmc",
+		"$argon2i$v=19$m=65536,t=2,p=1$bG9uZ3NhbHRsb25nc2FsdGxvbmc$y3Tz6SCUIw7occvkgsUYx0hwaePXLus7rxUzsOghhnE", nil))
+	t.Run(testFn("ignore-hash-in-settings", "$argon2id$v=19$m=65536,t=2,p=1$bG9uZ3NhbHRsb25nc2FsdGxvbmc$y3Tz6SCUIw7occvkgsUYx0hwaePXLus7rxUzsOghhnE",
+		"$argon2i$v=19$m=65536,t=2,p=1$bG9uZ3NhbHRsb25nc2FsdGxvbmc$sToxuMqIBNNRYEPy2Gh690R7qa7mkhJ627ciTZdyQSA", nil))
+	t.Run(testFn("password", "$argon2id$v=19$m=65536,t=3,p=1$bG9uZ3NhbHRsb25nc2FsdA",
+		"$argon2i$v=19$m=65536,t=3,p=1$bG9uZ3NhbHRsb25nc2FsdA$SHogC8dbNGlyrOIJTrZ4f0/r/ZmTglvCx4u5GUzw6EM", nil))
+	t.Run(testFn("password", "$argon2id$v=19$m=65536,t=3,p=1,k=64$bG9uZ3NhbHRsb25nc2FsdA",
+		"$argon2i$v=19$m=65536,t=3,p=1,k=64$bG9uZ3NhbHRsb25nc2FsdA$gaB/QbA34/AJkE/QbuEByjVhIF3sCvX+LHo8L3otGHhWh5q++cFMfidqGQd6qoGu3Qcm7LEPl8dQWMzyblYqYg", nil))
 }
 
 func TestArgon2idSettings(t *testing.T) {
-	tcs := []struct {
-		m                      int
-		t                      int
-		p                      int
-		expectedSettingsPrefix string
-	}{
-		{65536, 2, 4, "$argon2id$v=19$m=65536,t=2,p=4"},
+	testFn := func(m, t, p, k int, expectSettingsPrefix string) (string, func(*testing.T)) {
+		return fmt.Sprintf("m=%d,t=%d,p=%d,k=%d", m, t, p, k), func(tt *testing.T) {
+			settings, err := crypt.Argon2idSettings(m, t, p, k)
+			require.NoError(tt, err)
+			assert.True(tt, strings.HasPrefix(settings, expectSettingsPrefix))
+		}
 	}
 
-	for _, tc := range tcs {
-		t.Run(fmt.Sprintf("m=%d,t=%d,p=%d", tc.m, tc.t, tc.p), func(t *testing.T) {
-			settings, err := crypt.Argon2idSettings(tc.m, tc.t, tc.p)
-			require.NoError(t, err)
-			assert.True(t, strings.HasPrefix(settings, tc.expectedSettingsPrefix))
-		})
-	}
+	t.Run(testFn(65536, 2, 4, 64, "$argon2id$v=19$m=65536,t=2,p=4,k=64"))
 }

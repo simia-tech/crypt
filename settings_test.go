@@ -40,6 +40,7 @@ func TestSettings(t *testing.T) {
 	t.Run(testFn("$2a$08$ybX1Hjkb5N.8WEcYtBuB7u", "$2a$08$ybX1Hjkb5N.8WEcYtBuB7u"))
 	t.Run(testFn("$2a$08$ybX1Hjkb5N.8WEcYtBuB7u$CMA/ViizL57cnTLOa5DiVM9e", "$2a$08$ybX1Hjkb5N.8WEcYtBuB7u"))
 	t.Run(testFn("$argon2i$v=19$m=65536,t=2,p=4$c29tZXNhbHQ$IMit9qkFULCMA/ViizL57cnTLOa5DiVM9eMwpAvPwr4", "$argon2i$v=19$m=65536,t=2,p=4$c29tZXNhbHQ"))
+	t.Run(testFn("$argon2i$v=19$m=65536,t=2,p=4,k=64$c29tZXNhbHQ$IMit9qkFULCMA/ViizL57cnTLOa5DiVM9eMwpAvPwr4", "$argon2i$v=19$m=65536,t=2,p=4,k=64$c29tZXNhbHQ"))
 }
 
 func TestDecodeSettings(t *testing.T) {
@@ -62,4 +63,5 @@ func TestDecodeSettings(t *testing.T) {
 	t.Run(testFn("$1$rounds=300$salt$hash$", "1", crypt.Parameter{"rounds": "300"}, "salt", "hash", nil))
 	t.Run(testFn("$2a$08$ybX1Hjkb5N.8WEcYtBuB7u", "2a", crypt.Parameter{"cost": "8"}, "ybX1Hjkb5N.8WEcYtBuB7u", "", nil))
 	t.Run(testFn("$argon2i$v=19$m=65536,t=2,p=4$c29tZXNhbHQ$IMit9qkFULCMA/ViizL57cnTLOa5DiVM9eMwpAvPwr4", "argon2i", crypt.Parameter{"v": "19", "m": "65536", "t": "2", "p": "4"}, "c29tZXNhbHQ", "IMit9qkFULCMA/ViizL57cnTLOa5DiVM9eMwpAvPwr4", nil))
+	t.Run(testFn("$argon2i$v=19$m=65536,t=2,p=4,k=64$c29tZXNhbHQ$IMit9qkFULCMA/ViizL57cnTLOa5DiVM9eMwpAvPwr4", "argon2i", crypt.Parameter{"v": "19", "m": "65536", "t": "2", "p": "4", "k": "64"}, "c29tZXNhbHQ", "IMit9qkFULCMA/ViizL57cnTLOa5DiVM9eMwpAvPwr4", nil))
 }
