@@ -3,22 +3,22 @@
 
 [![Build Status](https://travis-ci.org/simia-tech/crypt.svg?branch=master)](https://travis-ci.org/simia-tech/crypt) [![Go Report Card](https://goreportcard.com/badge/github.com/simia-tech/crypt)](https://goreportcard.com/report/github.com/simia-tech/crypt)  [![Documentation](https://godoc.org/github.com/simia-tech/crypt?status.svg)](http://godoc.org/github.com/simia-tech/crypt)
 
-Crypt implementation in pure Go
+Crypt implementation in pure Go. It provides a unified interface to varous hashing algorithms for key derivation.
 
 # Example
 
 ```go
 func main() {
-	password := "password"
-	settings := "$argon2id$v=19$m=65536,t=2,p=4$c2FsdHNhbHQ" // salt = "saltsalt"
+    password := "password"
+    settings := "$argon2id$v=19$m=65536,t=2,p=4$c2FsdHNhbHQ" // salt = "saltsalt"
 
-	encoded, err := crypt.Crypt(password, settings)
-	if err != nil {
-		log.Fatal(err)
-	}
+    encoded, err := crypt.Crypt(password, settings)
+    if err != nil {
+        log.Fatal(err)
+    }
 
-	fmt.Println(encoded)
-	// Output: $argon2id$v=19$m=65536,t=2,p=4$c2FsdHNhbHQ$mxUf7CB5gEwtDSiHfZCvxj17E8XeTFh2fpti1ioD3SA
+    fmt.Println(encoded)
+    // Output: $argon2id$v=19$m=65536,t=2,p=4$c2FsdHNhbHQ$mxUf7CB5gEwtDSiHfZCvxj17E8XeTFh2fpti1ioD3SA
 }
 ```
 
