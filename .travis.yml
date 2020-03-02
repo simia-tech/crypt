@@ -2,5 +2,5 @@
 language: go
 
 go:
-  - 1.9.3
-  - stable
+  - 1.13
+  - tip
