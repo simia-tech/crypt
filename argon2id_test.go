@@ -34,19 +34,19 @@ func TestArgon2id(t *testing.T) {
 	}
 
 	t.Run(testFn("generate salt", "$argon2id$v=19$m=65536,t=2,p=4$",
-		"$argon2i$v=19$m=65536,t=2$", nil))
+		"$argon2id$v=19$m=65536,t=2$", nil))
 	t.Run(testFn("password", "$argon2id$v=19$m=65536,t=2,p=4$c29tZXNhbHQ",
-		"$argon2i$v=19$m=65536,t=2$c29tZXNhbHQ$GpZ3sK/oH9p7VIiV56G/64Zo/8GaUw434IimaPqxwCo", nil))
+		"$argon2id$v=19$m=65536,t=2$c29tZXNhbHQ$GpZ3sK/oH9p7VIiV56G/64Zo/8GaUw434IimaPqxwCo", nil))
 	t.Run(testFn("another password", "$argon2id$v=19$m=65536,t=2,p=4$YW5vdGhlcnNhbHQ",
-		"$argon2i$v=19$m=65536,t=2$YW5vdGhlcnNhbHQ$ZU9gSnQfqeEZG2Wu6Wq9pek2UAttI/N8NLCEecVBRZc", nil))
+		"$argon2id$v=19$m=65536,t=2$YW5vdGhlcnNhbHQ$ZU9gSnQfqeEZG2Wu6Wq9pek2UAttI/N8NLCEecVBRZc", nil))
 	t.Run(testFn("password", "$argon2id$v=19$m=65536,t=2,p=1$bG9uZ3NhbHRsb25nc2FsdGxvbmc",
-		"$argon2i$v=19$m=65536,t=2,p=1$bG9uZ3NhbHRsb25nc2FsdGxvbmc$y3Tz6SCUIw7occvkgsUYx0hwaePXLus7rxUzsOghhnE", nil))
+		"$argon2id$v=19$m=65536,t=2,p=1$bG9uZ3NhbHRsb25nc2FsdGxvbmc$y3Tz6SCUIw7occvkgsUYx0hwaePXLus7rxUzsOghhnE", nil))
 	t.Run(testFn("ignore-hash-in-settings", "$argon2id$v=19$m=65536,t=2,p=1$bG9uZ3NhbHRsb25nc2FsdGxvbmc$y3Tz6SCUIw7occvkgsUYx0hwaePXLus7rxUzsOghhnE",
-		"$argon2i$v=19$m=65536,t=2,p=1$bG9uZ3NhbHRsb25nc2FsdGxvbmc$sToxuMqIBNNRYEPy2Gh690R7qa7mkhJ627ciTZdyQSA", nil))
+		"$argon2id$v=19$m=65536,t=2,p=1$bG9uZ3NhbHRsb25nc2FsdGxvbmc$sToxuMqIBNNRYEPy2Gh690R7qa7mkhJ627ciTZdyQSA", nil))
 	t.Run(testFn("password", "$argon2id$v=19$m=65536,t=3,p=1$bG9uZ3NhbHRsb25nc2FsdA",
-		"$argon2i$v=19$m=65536,t=3,p=1$bG9uZ3NhbHRsb25nc2FsdA$SHogC8dbNGlyrOIJTrZ4f0/r/ZmTglvCx4u5GUzw6EM", nil))
+		"$argon2id$v=19$m=65536,t=3,p=1$bG9uZ3NhbHRsb25nc2FsdA$SHogC8dbNGlyrOIJTrZ4f0/r/ZmTglvCx4u5GUzw6EM", nil))
 	t.Run(testFn("password", "$argon2id$v=19$m=65536,t=3,p=1,k=64$bG9uZ3NhbHRsb25nc2FsdA",
-		"$argon2i$v=19$m=65536,t=3,p=1,k=64$bG9uZ3NhbHRsb25nc2FsdA$gaB/QbA34/AJkE/QbuEByjVhIF3sCvX+LHo8L3otGHhWh5q++cFMfidqGQd6qoGu3Qcm7LEPl8dQWMzyblYqYg", nil))
+		"$argon2id$v=19$m=65536,t=3,p=1,k=64$bG9uZ3NhbHRsb25nc2FsdA$gaB/QbA34/AJkE/QbuEByjVhIF3sCvX+LHo8L3otGHhWh5q++cFMfidqGQd6qoGu3Qcm7LEPl8dQWMzyblYqYg", nil))
 }
 
 func TestArgon2idSettings(t *testing.T) {
