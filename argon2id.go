@@ -79,15 +79,9 @@ func argon2idAlgorithm(password, settings string) (string, error) {
 	hash := argon2.IDKey(passwordBytes, saltBytes, uint32(time), uint32(memory), uint8(threads), uint32(keySize))
 
 	p := []string{}
-	if memory != argon2idDefaultMemory {
-		p = append(p, "m="+strconv.Itoa(memory))
-	}
-	if time != argon2idDefaultTime {
-		p = append(p, "t="+strconv.Itoa(time))
-	}
-	if threads != argon2idDefaultThreads {
-		p = append(p, "p="+strconv.Itoa(threads))
-	}
+	p = append(p, "m="+strconv.Itoa(memory))
+	p = append(p, "t="+strconv.Itoa(time))
+	p = append(p, "p="+strconv.Itoa(threads))
 	if keySize != argon2idDefaultKeySize {
 		p = append(p, "k="+strconv.Itoa(keySize))
 	}
