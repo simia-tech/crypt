@@ -34,15 +34,15 @@ func TestArgon2i(t *testing.T) {
 	}
 
 	t.Run(testFn("generate salt", "$argon2i$v=19$m=65536,t=2,p=4$",
-		"$argon2i$v=19$m=65536,t=2$", nil))
+		"$argon2i$v=19$m=65536,t=2,p=4$", nil))
 	t.Run(testFn("password", "$argon2i$v=19$m=65536,t=2,p=4$c29tZXNhbHQ",
-		"$argon2i$v=19$m=65536,t=2$c29tZXNhbHQ$IMit9qkFULCMA/ViizL57cnTLOa5DiVM9eMwpAvPwr4", nil))
+		"$argon2i$v=19$m=65536,t=2,p=4$c29tZXNhbHQ$IMit9qkFULCMA/ViizL57cnTLOa5DiVM9eMwpAvPwr4", nil))
 	t.Run(testFn("another password", "$argon2i$v=19$m=65536,t=2,p=4$YW5vdGhlcnNhbHQ",
-		"$argon2i$v=19$m=65536,t=2$YW5vdGhlcnNhbHQ$BCRltpeTFX0QYrELiOXWGZniID9nOUsBPy8Bu0SE7bM", nil))
+		"$argon2i$v=19$m=65536,t=2,p=4$YW5vdGhlcnNhbHQ$BCRltpeTFX0QYrELiOXWGZniID9nOUsBPy8Bu0SE7bM", nil))
 	t.Run(testFn("password", "$argon2i$v=19$m=65536,t=2,p=1$bG9uZ3NhbHRsb25nc2FsdGxvbmc",
 		"$argon2i$v=19$m=65536,t=2,p=1$bG9uZ3NhbHRsb25nc2FsdGxvbmc$N2zfK+oCIRMbTX04zZS4X2uLKX3SK0KkNxyCw/NURrU", nil))
 	t.Run(testFn("ignore-hash-in-settings", "$argon2i$v=19$m=65536,t=2$bG9uZ3NhbHRsb25nc2FsdGxvbmc$rDmQABiNkSO3bGHbBUkShgb7wIlBP8HHfq6nDH+Sqss",
-		"$argon2i$v=19$m=65536,t=2$bG9uZ3NhbHRsb25nc2FsdGxvbmc$xY9IRFH+zQduVUYoZfSoT6tylET3/AUIOMS3rFF0x0o", nil))
+		"$argon2i$v=19$m=65536,t=2,p=4$bG9uZ3NhbHRsb25nc2FsdGxvbmc$xY9IRFH+zQduVUYoZfSoT6tylET3/AUIOMS3rFF0x0o", nil))
 	t.Run(testFn("password", "$argon2i$v=19$m=65536,t=3,p=1$bG9uZ3NhbHRsb25nc2FsdA",
 		"$argon2i$v=19$m=65536,t=3,p=1$bG9uZ3NhbHRsb25nc2FsdA$K2rLfVoQG17LuUn26otasTX1WBXjr6hi5NZXKKxmYrs", nil))
 	t.Run(testFn("password", "$argon2i$v=19$m=65536,t=3,p=1,k=64$bG9uZ3NhbHRsb25nc2FsdA",

@@ -34,11 +34,11 @@ func TestArgon2id(t *testing.T) {
 	}
 
 	t.Run(testFn("generate salt", "$argon2id$v=19$m=65536,t=2,p=4$",
-		"$argon2id$v=19$m=65536,t=2$", nil))
+		"$argon2id$v=19$m=65536,t=2,p=4$", nil))
 	t.Run(testFn("password", "$argon2id$v=19$m=65536,t=2,p=4$c29tZXNhbHQ",
-		"$argon2id$v=19$m=65536,t=2$c29tZXNhbHQ$GpZ3sK/oH9p7VIiV56G/64Zo/8GaUw434IimaPqxwCo", nil))
+		"$argon2id$v=19$m=65536,t=2,p=4$c29tZXNhbHQ$GpZ3sK/oH9p7VIiV56G/64Zo/8GaUw434IimaPqxwCo", nil))
 	t.Run(testFn("another password", "$argon2id$v=19$m=65536,t=2,p=4$YW5vdGhlcnNhbHQ",
-		"$argon2id$v=19$m=65536,t=2$YW5vdGhlcnNhbHQ$ZU9gSnQfqeEZG2Wu6Wq9pek2UAttI/N8NLCEecVBRZc", nil))
+		"$argon2id$v=19$m=65536,t=2,p=4$YW5vdGhlcnNhbHQ$ZU9gSnQfqeEZG2Wu6Wq9pek2UAttI/N8NLCEecVBRZc", nil))
 	t.Run(testFn("password", "$argon2id$v=19$m=65536,t=2,p=1$bG9uZ3NhbHRsb25nc2FsdGxvbmc",
 		"$argon2id$v=19$m=65536,t=2,p=1$bG9uZ3NhbHRsb25nc2FsdGxvbmc$y3Tz6SCUIw7occvkgsUYx0hwaePXLus7rxUzsOghhnE", nil))
 	t.Run(testFn("ignore-hash-in-settings", "$argon2id$v=19$m=65536,t=2,p=1$bG9uZ3NhbHRsb25nc2FsdGxvbmc$y3Tz6SCUIw7occvkgsUYx0hwaePXLus7rxUzsOghhnE",
