@@ -1,7 +1,7 @@
 
 # Crypt
 
-[![Build Status](https://travis-ci.org/simia-tech/crypt.svg?branch=master)](https://travis-ci.org/simia-tech/crypt) [![Go Report Card](https://goreportcard.com/badge/github.com/simia-tech/crypt)](https://goreportcard.com/report/github.com/simia-tech/crypt)  [![Documentation](https://pkg.go.dev/github.com/simia-tech/crypt?status.svg)](https://pkg.go.dev/github.com/simia-tech/crypt)
+[![Build Status](https://travis-ci.org/simia-tech/crypt.svg?branch=master)](https://travis-ci.org/simia-tech/crypt) [![Go Report Card](https://goreportcard.com/badge/github.com/simia-tech/crypt)](https://goreportcard.com/report/github.com/simia-tech/crypt)  [![Documentation](https://pkg.go.dev/badge/github.com/simia-tech/crypt?status.svg)](https://pkg.go.dev/github.com/simia-tech/crypt)
 
 Crypt implementation in pure Go. It provides a unified interface to varous hashing algorithms for key derivation.
 
