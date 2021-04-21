@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/simia-tech/crypt/bcrypt"
+	"github.com/simia-tech/crypt/internal/bcrypt"
 )
 
 // BCryptPrefix defines the settings prefix for bcrypt hashes.
