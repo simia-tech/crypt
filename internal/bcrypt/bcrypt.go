@@ -187,7 +187,12 @@ func newFromPasswordAndSalt(password []byte, cost int, salt []byte) (*hashed, er
 	}
 	p.cost = cost
 
-	p.salt = salt
+	s, err := Base64Decode(salt)
+	if err != nil {
+		return nil, err
+	}
+	p.salt = Base64Encode(s)
+
 	hash, err := bcrypt(password, p.cost, p.salt)
 	if err != nil {
 		return nil, err

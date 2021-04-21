@@ -39,6 +39,7 @@ func TestBCrypt(t *testing.T) {
 	t.Run(testFn("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789chars after 72 are ignored", "$2a$05$abcdefghijklmnopqrstuu", "$2a$05$abcdefghijklmnopqrstuu5s2v8.iXieOjg/.AySBTTZIIVFJeBui", nil))
 	t.Run(testFn("\xa3", "$2a$05$/OK.fbVrR/bpIqNJ5ianF.", "$2a$05$/OK.fbVrR/bpIqNJ5ianF.Sa7shbm4.OzKpvFnX1pQLmQW96oUlCq", nil))
 	t.Run(testFn("", "$2a$05$CCCCCCCCCCCCCCCCCCCCC.", "$2a$05$CCCCCCCCCCCCCCCCCCCCC.7uG0VCzI2bS7j6ymqJi9CdcdxiRTWNy", nil))
+	t.Run(testFn("abc123", "$2a$10$xxxxxxxxxxxxxxxxxxxxxx", "$2a$10$xxxxxxxxxxxxxxxxxxxxxuPfKrD5.GO79Yeh5vHZNkWf9wqVL/gNi", nil))
 }
 
 func TestBCryptSettings(t *testing.T) {
